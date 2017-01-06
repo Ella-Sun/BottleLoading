@@ -15,6 +15,8 @@
 		4476B3AD1E1E3B780073166A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4476B3AB1E1E3B780073166A /* LaunchScreen.storyboard */; };
 		4476B3B81E1E3B780073166A /* BezierPathTryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4476B3B71E1E3B780073166A /* BezierPathTryTests.m */; };
 		4476B3C31E1E3B780073166A /* BezierPathTryUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4476B3C21E1E3B780073166A /* BezierPathTryUITests.m */; };
+		4476B3D61E1E3BEF0073166A /* BottleLoading.m in Sources */ = {isa = PBXBuildFile; fileRef = 4476B3D51E1E3BEF0073166A /* BottleLoading.m */; };
+		4476B3D81E1E3CD20073166A /* bottleLoading.gif in Resources */ = {isa = PBXBuildFile; fileRef = 4476B3D71E1E3CD20073166A /* bottleLoading.gif */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +53,9 @@
 		4476B3BE1E1E3B780073166A /* BezierPathTryUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BezierPathTryUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4476B3C21E1E3B780073166A /* BezierPathTryUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BezierPathTryUITests.m; sourceTree = "<group>"; };
 		4476B3C41E1E3B780073166A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4476B3D41E1E3BEF0073166A /* BottleLoading.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BottleLoading.h; sourceTree = "<group>"; };
+		4476B3D51E1E3BEF0073166A /* BottleLoading.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BottleLoading.m; sourceTree = "<group>"; };
+		4476B3D71E1E3CD20073166A /* bottleLoading.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = bottleLoading.gif; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +110,7 @@
 				4476B3A11E1E3B780073166A /* AppDelegate.m */,
 				4476B3A31E1E3B780073166A /* ViewController.h */,
 				4476B3A41E1E3B780073166A /* ViewController.m */,
+				4476B3D31E1E3BEF0073166A /* BottleLoading(花瓶加载动画) */,
 				4476B3A61E1E3B780073166A /* Main.storyboard */,
 				4476B3A91E1E3B780073166A /* Assets.xcassets */,
 				4476B3AB1E1E3B780073166A /* LaunchScreen.storyboard */,
@@ -138,6 +144,17 @@
 				4476B3C41E1E3B780073166A /* Info.plist */,
 			);
 			path = BezierPathTryUITests;
+			sourceTree = "<group>";
+		};
+		4476B3D31E1E3BEF0073166A /* BottleLoading(花瓶加载动画) */ = {
+			isa = PBXGroup;
+			children = (
+				4476B3D71E1E3CD20073166A /* bottleLoading.gif */,
+				4476B3D41E1E3BEF0073166A /* BottleLoading.h */,
+				4476B3D51E1E3BEF0073166A /* BottleLoading.m */,
+			);
+			name = "BottleLoading(花瓶加载动画)";
+			path = VaseLoading;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -250,6 +267,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4476B3AD1E1E3B780073166A /* LaunchScreen.storyboard in Resources */,
+				4476B3D81E1E3CD20073166A /* bottleLoading.gif in Resources */,
 				4476B3AA1E1E3B780073166A /* Assets.xcassets in Resources */,
 				4476B3A81E1E3B780073166A /* Main.storyboard in Resources */,
 			);
@@ -277,6 +295,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4476B3A51E1E3B780073166A /* ViewController.m in Sources */,
+				4476B3D61E1E3BEF0073166A /* BottleLoading.m in Sources */,
 				4476B3A21E1E3B780073166A /* AppDelegate.m in Sources */,
 				4476B39F1E1E3B780073166A /* main.m in Sources */,
 			);
