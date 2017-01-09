@@ -43,6 +43,10 @@ static CGFloat loadHeight = 220.f;
 //瓶身
 @property (nonatomic, weak) CAShapeLayer *bodyLayer;
 
+//右侧
+//瓶身
+@property (nonatomic, weak) CAShapeLayer *otherBodyLayer;
+
 //瓶底
 @property (nonatomic, weak) CAShapeLayer *bottomLayer;
 
@@ -55,12 +59,18 @@ static CGFloat loadHeight = 220.f;
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
-        [self setupShowView];
+        //绘制瓶子
+        [self setupBottleView];
+        //绘制水
+        [self setupWaterView];
     }
     return self;
 }
 
-- (void)setupShowView
+/**
+ 绘制瓶子
+ */
+- (void)setupBottleView
 {
     CGRect showFrame = CGRectMake(0, 0, loadWidth, loadHeight);
     UIView *loadingView = [[UIView alloc] initWithFrame:showFrame];
@@ -79,6 +89,19 @@ static CGFloat loadHeight = 220.f;
     [self summaryRotateLayers];
     //瓶底
     [self drawBottleBottomLayer];
+}
+
+/**
+ 绘制水
+ */
+- (void)setupWaterView
+{
+    //绘制靠近底部的静态的水
+    [self drawStaticWaterLayer];
+    //绘制水波
+    [self drawWaterWaveLayer];
+    //绘制水滴
+    [self drawWaterDropLayer];
 }
 
 /**
@@ -222,6 +245,7 @@ static CGFloat loadHeight = 220.f;
     otherBodyLayer.fillColor = [UIColor clearColor].CGColor;
     otherBodyLayer.strokeColor = BotttleColor.CGColor;
     [self.loadingView.layer addSublayer:otherBodyLayer];
+    self.otherBodyLayer = otherBodyLayer;
 }
 
 /**
@@ -238,7 +262,7 @@ static CGFloat loadHeight = 220.f;
     bottomPath.lineJoinStyle = kCGLineJoinRound;
     
     //瓶底左侧点 曲线结束点
-    CGFloat bottomY = loadHeight - 10;
+    CGFloat bottomY = loadHeight - marginSpace;
     CGFloat leftBottomX = (loadWidth - bottomWidth) * 0.5 + 4;
     CGFloat rightBottomX = leftBottomX + bottomWidth - 8;
     CGPoint leftBeginPoint = CGPointMake(leftBottomX, bottomY);
@@ -256,10 +280,73 @@ static CGFloat loadHeight = 220.f;
     [self.loadingView.layer addSublayer:bottomLayer];
 }
 
+
+/**
+ 绘制靠近底部的静态的水
+ */
+- (void)drawStaticWaterLayer
+{
+    UIBezierPath *bLeftPath = [UIBezierPath bezierPath];
+    bLeftPath.lineWidth = 2;
+    // 终点处理：设置结束点曲线
+    bLeftPath.lineCapStyle = kCGLineCapRound;
+    // 拐角处理：设置两个连接点曲线
+    bLeftPath.lineJoinStyle = kCGLineJoinRound;
+                                
+    //静态水面高度
+    CGFloat staticHeight = bodyHeight * 0.3;
+    CGFloat staticWidth = bottomWidth * 1.23;
+    
+    //起始点
+    CGFloat leftStartX = (loadWidth - staticWidth) * 0.5;
+    CGFloat leftStartY = loadHeight - marginSpace - bottleWidth - staticHeight;
+    CGPoint leftStartPoint = CGPointMake(leftStartX, leftStartY);
+    
+    [bLeftPath moveToPoint:leftStartPoint];
+    
+    //结束点
+    CGFloat leftEndX = loadWidth * 0.5;
+    CGFloat leftEndY = loadHeight - marginSpace - bottleWidth;
+    CGPoint leftEndPoint = CGPointMake(leftEndX, leftEndY);
+    
+    //左侧弧线
+    //控制点
+    CGFloat controlX = (loadWidth - bottomWidth) * 0.5 + bottleWidth;
+    CGFloat controlY = loadHeight - marginSpace;
+    CGPoint control1Point = CGPointMake(controlX, controlY);
+    
+    CGFloat controlX1 = controlX;
+    CGFloat controlY1 = controlY - bottleWidth;
+    CGPoint control2Point = CGPointMake(controlX1, controlY1);
+    [bLeftPath addCurveToPoint:leftEndPoint
+                 controlPoint1:control1Point
+                 controlPoint2:control2Point];
+    
+    
+    //左侧
+    CAShapeLayer *bLeftWaterLayer = [CAShapeLayer layer];
+    bLeftWaterLayer.path = bLeftPath.CGPath;
+    bLeftWaterLayer.lineWidth = bottleWidth;
+    bLeftWaterLayer.fillColor = [UIColor clearColor].CGColor;
+    bLeftWaterLayer.strokeColor = [UIColor whiteColor].CGColor;
+    [self.loadingView.layer addSublayer:bLeftWaterLayer];
+    
+    //右侧
+    CGFloat tx = loadWidth;
+    CGAffineTransform trans = CGAffineTransformMake(-1, 0, 0, 1, tx, 0);
+    CAShapeLayer *bRightLayer = [CAShapeLayer layer];
+    bRightLayer.path = bLeftWaterLayer.path;
+    bRightLayer.affineTransform = trans;
+    bRightLayer.lineWidth = bottleWidth;
+    bRightLayer.fillColor = [UIColor clearColor].CGColor;
+    bRightLayer.strokeColor = [UIColor whiteColor].CGColor;
+    [self.loadingView.layer addSublayer:bRightLayer];
+}
+
 /**
  绘制水波
  */
-- (void)drawWaveView
+- (void)drawWaterWaveLayer
 {
     
 }
@@ -267,7 +354,7 @@ static CGFloat loadHeight = 220.f;
 /**
  绘制水滴
  */
-- (void)drawWaterDropView
+- (void)drawWaterDropLayer
 {
     
 }
