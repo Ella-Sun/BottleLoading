@@ -34,7 +34,7 @@ static CGFloat loadHeight = 220.f;
 //水的颜色
 #define WaterColor [UIColor greenColor]
 //水与水瓶之间的颜色
-#define SpaceColor [UIColor clearColor]
+#define SpaceColor [UIColor whiteColor]
 
 @interface BottleLoading ()
 
@@ -43,6 +43,8 @@ static CGFloat loadHeight = 220.f;
 
 //瓶口
 @property (nonatomic, weak) CAShapeLayer *topLayer;
+//瓶颈
+@property (nonatomic, weak) CAShapeLayer *neckLayer;
 //瓶身
 @property (nonatomic, weak) CAShapeLayer *bodyLayer;
 
@@ -180,12 +182,12 @@ static CGFloat loadHeight = 220.f;
     CGFloat leftMidX = (loadWidth - topWidth) * 0.5;
     
     //创建path
-    UIBezierPath *bodyPath = [UIBezierPath bezierPath];
-    bodyPath.lineWidth = bottleWidth;
+    UIBezierPath *neckPath = [UIBezierPath bezierPath];
+    neckPath.lineWidth = bottleWidth;
     // 终点处理：设置结束点曲线
-    bodyPath.lineCapStyle = kCGLineCapRound;
+    neckPath.lineCapStyle = kCGLineCapRound;
     // 拐角处理：设置两个连接点曲线
-    bodyPath.lineJoinStyle = kCGLineJoinRound;
+    neckPath.lineJoinStyle = kCGLineJoinRound;
     
     /**<  瓶颈  >**/
     CGFloat outRadius = 5.f *bigScale;
@@ -197,8 +199,24 @@ static CGFloat loadHeight = 220.f;
     CGPoint lineBottomPoint = CGPointMake(lineX, (lineRightTopY+lineHeight));
     
     /**<  绘制瓶颈  >**/
-    [bodyPath moveToPoint:lineTopPoint];
-    [bodyPath addLineToPoint:lineBottomPoint];
+    [neckPath moveToPoint:lineTopPoint];
+    [neckPath addLineToPoint:lineBottomPoint];
+    
+    CAShapeLayer *neckLayer = [CAShapeLayer layer];
+    neckLayer.path = neckPath.CGPath;
+    neckLayer.lineWidth = bottleWidth;
+    neckLayer.fillColor = [UIColor clearColor].CGColor;
+    neckLayer.strokeColor = BotttleColor.CGColor;
+    [self.loadingView.layer addSublayer:neckLayer];
+    self.neckLayer = neckLayer;
+    
+    //创建path
+    UIBezierPath *bodyPath = [UIBezierPath bezierPath];
+    bodyPath.lineWidth = bottleWidth;
+    // 终点处理：设置结束点曲线
+    bodyPath.lineCapStyle = kCGLineCapRound;
+    // 拐角处理：设置两个连接点曲线
+    bodyPath.lineJoinStyle = kCGLineJoinRound;
     
     /**<  绘制瓶身  >**/
     CGFloat bodyMinY = 64.f;
@@ -211,6 +229,8 @@ static CGFloat loadHeight = 220.f;
     CGPoint control1Point = CGPointMake(0, bodyMinY+bodyHeight*0.9);
     
     /**<  绘制瓶身  >**/
+    CGPoint lineEndPoint = CGPointMake(lineX, (lineRightTopY+lineHeight-2));
+    [bodyPath moveToPoint:lineEndPoint];
     [bodyPath addQuadCurveToPoint:endPoint controlPoint:control1Point];
     
     CAShapeLayer *bodyLayer = [CAShapeLayer layer];
@@ -239,6 +259,15 @@ static CGFloat loadHeight = 220.f;
     otherTopLayer.fillColor = BotttleColor.CGColor;
     otherTopLayer.strokeColor = [UIColor clearColor].CGColor;
     [self.loadingView.layer addSublayer:otherTopLayer];
+    
+    //瓶颈
+    CAShapeLayer *otherNeckLayer = [CAShapeLayer layer];
+    otherNeckLayer.path = self.neckLayer.path;
+    otherNeckLayer.affineTransform = trans;
+    otherNeckLayer.lineWidth = bottleWidth;
+    otherNeckLayer.fillColor = [UIColor clearColor].CGColor;
+    otherNeckLayer.strokeColor = BotttleColor.CGColor;
+    [self.loadingView.layer addSublayer:otherNeckLayer];
     
     //瓶身
     CAShapeLayer *otherBodyLayer = [CAShapeLayer layer];
@@ -281,6 +310,7 @@ static CGFloat loadHeight = 220.f;
     bottomLayer.fillColor = [UIColor clearColor].CGColor;
     bottomLayer.strokeColor = BotttleColor.CGColor;
     [self.loadingView.layer addSublayer:bottomLayer];
+    self.bottomLayer = bottomLayer;
 }
 
 
@@ -289,6 +319,7 @@ static CGFloat loadHeight = 220.f;
  */
 - (void)drawStaticWaterLayer
 {
+    /*
     CGFloat lineWidth = 1.f;
     //静态水面高度
     CGFloat staticHeight = bodyHeight * 0.5;
@@ -359,8 +390,44 @@ static CGFloat loadHeight = 220.f;
     bRightLayer.fillColor = WaterColor.CGColor;
     bRightLayer.strokeColor = SpaceColor.CGColor;
     [self.loadingView.layer addSublayer:bRightLayer];
+     */
     
+    //左侧边缘
+    CGAffineTransform scaleTrans = CGAffineTransformMakeScale(0.9, 0.9);
+    CGAffineTransform transTrans = CGAffineTransformMakeTranslation(bottleWidth*1.8, 3*bottleWidth);
+    CGAffineTransform concatTrans = CGAffineTransformConcat(scaleTrans, transTrans);
     
+    CAShapeLayer *waterLayer = [CAShapeLayer layer];
+    waterLayer.path = self.bodyLayer.path;
+    waterLayer.affineTransform = concatTrans;
+    waterLayer.lineWidth = bottleWidth;
+    waterLayer.fillColor = [UIColor clearColor].CGColor;
+    waterLayer.strokeColor = SpaceColor.CGColor;
+    [self.loadingView.layer addSublayer:waterLayer];
+
+    //右侧边缘
+    CGFloat tx = loadWidth;
+    CGAffineTransform rotateTrans = CGAffineTransformMake(-1, 0, 0, 1, tx, 0);
+    CGAffineTransform concat1Trans = CGAffineTransformConcat(scaleTrans, rotateTrans);
+    CGAffineTransform endTrans = CGAffineTransformConcat(transTrans, concat1Trans);
+    CAShapeLayer *otherWaterLayer = [CAShapeLayer layer];
+    otherWaterLayer.path = waterLayer.path;
+    otherWaterLayer.affineTransform = endTrans;
+    otherWaterLayer.lineWidth = bottleWidth;
+    otherWaterLayer.fillColor = [UIColor clearColor].CGColor;
+    otherWaterLayer.strokeColor = SpaceColor.CGColor;
+    [self.loadingView.layer addSublayer:otherWaterLayer];
+    
+    //底边
+    CGAffineTransform moveTrans = CGAffineTransformMakeTranslation(0, -bottleWidth);
+    CAShapeLayer *otherBottomLayer = [CAShapeLayer layer];
+    otherBottomLayer.path = self.bottomLayer.path;
+    otherBottomLayer.affineTransform = moveTrans;
+    otherBottomLayer.lineWidth = bottleWidth;
+    otherBottomLayer.fillColor = [UIColor clearColor].CGColor;
+    otherBottomLayer.strokeColor = SpaceColor.CGColor;
+    [self.loadingView.layer addSublayer:otherBottomLayer];
+//    self.bottomLayer = otherBottomLayer;
 }
 
 /**
