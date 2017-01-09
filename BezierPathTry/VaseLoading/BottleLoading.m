@@ -14,6 +14,8 @@
 static CGFloat bigScale = 1;
 //线宽
 static CGFloat bottleWidth = 5.f;
+//水边宽
+static CGFloat waterRoundWidth = 3.f;
 
 static CGFloat marginSpace = 10.f;
 //花瓶宽度
@@ -87,6 +89,10 @@ static CGFloat loadHeight = 220.f;
     
     //瓶口
     [self drawBottleTopLayer];
+    
+    //绘制靠近底部的静态的水
+    [self drawStaticWaterLayer];
+    
     //瓶颈 瓶身
     [self drawBottleBodyLayer];
     
@@ -102,11 +108,14 @@ static CGFloat loadHeight = 220.f;
 - (void)setupWaterView
 {
     //绘制靠近底部的静态的水
-    [self drawStaticWaterLayer];
+//    [self drawStaticWaterLayer];
     //绘制水波
     [self drawWaterWaveLayer];
     //绘制水滴
     [self drawWaterDropLayer];
+    
+    //绘制水的边缘
+    [self drawWaterRoundLayer];
 }
 
 /**
@@ -313,122 +322,81 @@ static CGFloat loadHeight = 220.f;
     self.bottomLayer = bottomLayer;
 }
 
+/**
+ 绘制水的边缘
+ */
+- (void)drawWaterRoundLayer
+{
+    //左侧边缘
+    CGAffineTransform scaleTrans = CGAffineTransformMakeScale(1.1, 0.99);
+    CAShapeLayer *waterLeftLayer = [CAShapeLayer layer];
+    waterLeftLayer.path = self.bodyLayer.path;
+    waterLeftLayer.affineTransform = scaleTrans;
+    waterLeftLayer.lineWidth = waterRoundWidth;
+    waterLeftLayer.fillColor = [UIColor clearColor].CGColor;
+    waterLeftLayer.strokeColor = SpaceColor.CGColor;
+    [self.loadingView.layer addSublayer:waterLeftLayer];
+    
+    //右侧边缘
+    CGFloat tx = loadWidth;
+    CGAffineTransform rotateTrans = CGAffineTransformMake(-1, 0, 0, 1, tx, 0);
+    CGAffineTransform concat1Trans = CGAffineTransformConcat(scaleTrans, rotateTrans);
+    CAShapeLayer *waterRightLayer = [CAShapeLayer layer];
+    waterRightLayer.path = waterLeftLayer.path;
+    waterRightLayer.affineTransform = concat1Trans;
+    waterRightLayer.lineWidth = waterRoundWidth;
+    waterRightLayer.fillColor = [UIColor clearColor].CGColor;
+    waterRightLayer.strokeColor = SpaceColor.CGColor;
+    [self.loadingView.layer addSublayer:waterRightLayer];
+    
+    //底边
+    CGAffineTransform bScaleTrans = CGAffineTransformMakeScale(0.99, 1.0);
+    CGAffineTransform bMoveTrans = CGAffineTransformMakeTranslation(0, -bottleWidth+2);
+    CGAffineTransform bEndTrans = CGAffineTransformConcat(bScaleTrans, bMoveTrans);
+    CAShapeLayer *otherBottomLayer = [CAShapeLayer layer];
+    otherBottomLayer.path = self.bottomLayer.path;
+    otherBottomLayer.affineTransform = bEndTrans;
+    otherBottomLayer.lineWidth = waterRoundWidth;
+    otherBottomLayer.fillColor = [UIColor clearColor].CGColor;
+    otherBottomLayer.strokeColor = SpaceColor.CGColor;
+    [self.loadingView.layer addSublayer:otherBottomLayer];
+}
 
 /**
  绘制靠近底部的静态的水
  */
 - (void)drawStaticWaterLayer
 {
-    /*
-    CGFloat lineWidth = 1.f;
-    //静态水面高度
-    CGFloat staticHeight = bodyHeight * 0.5;
-    CGFloat staticWidth = bottomWidth * 1.27;
+    CGFloat waterHeight = bodyHeight * 0.5;
+    //静态水
+    CGFloat waterMinY = loadHeight - marginSpace - waterHeight;
+    CGFloat leftMinX = (loadWidth - bottomWidth) * 0.5 - bottomWidth*0.2;
+    CGFloat rightMaxX = loadWidth - leftMinX;
+    CGPoint startPoint = CGPointMake(leftMinX, waterMinY);
+    CGPoint endPoint = CGPointMake(rightMaxX, waterMinY);
     
-    //起始点
-    CGFloat leftStartX = (loadWidth - staticWidth) * 0.5;
-    CGFloat leftStartY = loadHeight - marginSpace - bottleWidth - staticHeight;
-    CGPoint leftStartPoint = CGPointMake(leftStartX, leftStartY);
+    CGFloat leftTurnX = (loadWidth - bottomWidth) * 0.5;
+    CGFloat rightTurnX = loadWidth - leftTurnX;
+    CGFloat turnY = loadHeight - marginSpace - 2;
+    CGPoint leftTurnPoint = CGPointMake(leftTurnX, turnY);
+    CGPoint rightTurnPoint = CGPointMake(rightTurnX, turnY);
     
-    //结束点
-    CGFloat leftEndX = loadWidth * 0.5;
-    CGFloat leftEndY = loadHeight - marginSpace - bottleWidth;
-    CGPoint leftEndPoint = CGPointMake(leftEndX, leftEndY);
-    
-    //中间补全
-    UIBezierPath *bMidPath = [UIBezierPath bezierPath];
-    bMidPath.lineWidth = 0.1;
-    // 终点处理：设置结束点曲线
-    bMidPath.lineCapStyle = kCGLineCapRound;
-    // 拐角处理：设置两个连接点曲线
-    bMidPath.lineJoinStyle = kCGLineJoinRound;
-    
-    CGPoint rightStartPoint = CGPointMake(loadWidth-leftStartX, leftStartY);
-    [bMidPath moveToPoint:leftStartPoint];
-    [bMidPath addLineToPoint:leftEndPoint];
-    [bMidPath addLineToPoint:rightStartPoint];
-    [bMidPath closePath];
-    
-    CAShapeLayer *bMidWaterLayer = [CAShapeLayer layer];
-    bMidWaterLayer.path = bMidPath.CGPath;
-    bMidWaterLayer.lineWidth = 0.1;
-    bMidWaterLayer.fillColor = WaterColor.CGColor;
-    bMidWaterLayer.strokeColor = [UIColor clearColor].CGColor;
-    [self.loadingView.layer addSublayer:bMidWaterLayer];
-    
-    //左侧弧线
-    UIBezierPath *bLeftPath = [UIBezierPath bezierPath];
-    //控制点
-    CGFloat controlX = (loadWidth - bottomWidth) * 0.5 - bottleWidth*2.1;
-    CGFloat controlY = loadHeight - marginSpace - bodyHeight*0.2;
-    CGPoint control1Point = CGPointMake(controlX, controlY);
-    
-    CGFloat controlX1 = (loadWidth - bottomWidth) * 0.5;
-    CGFloat controlY1 = loadHeight - marginSpace;
-    CGPoint control2Point = CGPointMake(controlX1, controlY1);
-    [bLeftPath moveToPoint:leftStartPoint];
-    [bLeftPath addCurveToPoint:leftEndPoint
-                 controlPoint1:control1Point
-                 controlPoint2:control2Point];
-    
-    
-    //左侧
-    CAShapeLayer *bLeftWaterLayer = [CAShapeLayer layer];
-    bLeftWaterLayer.path = bLeftPath.CGPath;
-    bLeftWaterLayer.lineWidth = lineWidth;
-    bLeftWaterLayer.fillColor = WaterColor.CGColor;
-    bLeftWaterLayer.strokeColor = SpaceColor.CGColor;
-    [self.loadingView.layer addSublayer:bLeftWaterLayer];
-    
-    //右侧
-    CGFloat tx = loadWidth;
-    CGAffineTransform trans = CGAffineTransformMake(-1, 0, 0, 1, tx, 0);
-    CAShapeLayer *bRightLayer = [CAShapeLayer layer];
-    bRightLayer.path = bLeftWaterLayer.path;
-    bRightLayer.affineTransform = trans;
-    bRightLayer.lineWidth = lineWidth;
-    bRightLayer.fillColor = WaterColor.CGColor;
-    bRightLayer.strokeColor = SpaceColor.CGColor;
-    [self.loadingView.layer addSublayer:bRightLayer];
-     */
-    
-    //左侧边缘
-    CGAffineTransform scaleTrans = CGAffineTransformMakeScale(0.9, 0.9);
-    CGAffineTransform transTrans = CGAffineTransformMakeTranslation(bottleWidth*1.8, 3*bottleWidth);
-    CGAffineTransform concatTrans = CGAffineTransformConcat(scaleTrans, transTrans);
+    UIBezierPath *waterPath = [UIBezierPath bezierPath];
+    [waterPath moveToPoint:startPoint];
+    [waterPath addLineToPoint:leftTurnPoint];
+    [waterPath addLineToPoint:rightTurnPoint];
+    [waterPath addLineToPoint:endPoint];
+    [waterPath closePath];
     
     CAShapeLayer *waterLayer = [CAShapeLayer layer];
-    waterLayer.path = self.bodyLayer.path;
-    waterLayer.affineTransform = concatTrans;
-    waterLayer.lineWidth = bottleWidth;
-    waterLayer.fillColor = [UIColor clearColor].CGColor;
-    waterLayer.strokeColor = SpaceColor.CGColor;
-    [self.loadingView.layer addSublayer:waterLayer];
-
-    //右侧边缘
-    CGFloat tx = loadWidth;
-    CGAffineTransform rotateTrans = CGAffineTransformMake(-1, 0, 0, 1, tx, 0);
-    CGAffineTransform concat1Trans = CGAffineTransformConcat(scaleTrans, rotateTrans);
-    CGAffineTransform endTrans = CGAffineTransformConcat(transTrans, concat1Trans);
-    CAShapeLayer *otherWaterLayer = [CAShapeLayer layer];
-    otherWaterLayer.path = waterLayer.path;
-    otherWaterLayer.affineTransform = endTrans;
-    otherWaterLayer.lineWidth = bottleWidth;
-    otherWaterLayer.fillColor = [UIColor clearColor].CGColor;
-    otherWaterLayer.strokeColor = SpaceColor.CGColor;
-    [self.loadingView.layer addSublayer:otherWaterLayer];
+    waterLayer.path = waterPath.CGPath;
+    waterLayer.lineWidth = 0.1;
+    waterLayer.fillColor = WaterColor.CGColor;
+    waterLayer.strokeColor = [UIColor clearColor].CGColor;
+    [self.loadingView.layer insertSublayer:waterLayer below:self.bottomLayer];
     
-    //底边
-    CGAffineTransform moveTrans = CGAffineTransformMakeTranslation(0, -bottleWidth);
-    CAShapeLayer *otherBottomLayer = [CAShapeLayer layer];
-    otherBottomLayer.path = self.bottomLayer.path;
-    otherBottomLayer.affineTransform = moveTrans;
-    otherBottomLayer.lineWidth = bottleWidth;
-    otherBottomLayer.fillColor = [UIColor clearColor].CGColor;
-    otherBottomLayer.strokeColor = SpaceColor.CGColor;
-    [self.loadingView.layer addSublayer:otherBottomLayer];
-//    self.bottomLayer = otherBottomLayer;
 }
+
 
 /**
  绘制水波
