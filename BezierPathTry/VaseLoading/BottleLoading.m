@@ -31,7 +31,10 @@ static CGFloat loadHeight = 220.f;
 #define topWidth (loadWidth * 0.3)
 //花瓶颜色
 #define BotttleColor [UIColor blackColor]
-
+//水的颜色
+#define WaterColor [UIColor greenColor]
+//水与水瓶之间的颜色
+#define SpaceColor [UIColor clearColor]
 
 @interface BottleLoading ()
 
@@ -286,38 +289,53 @@ static CGFloat loadHeight = 220.f;
  */
 - (void)drawStaticWaterLayer
 {
-    UIBezierPath *bLeftPath = [UIBezierPath bezierPath];
-    bLeftPath.lineWidth = 2;
-    // 终点处理：设置结束点曲线
-    bLeftPath.lineCapStyle = kCGLineCapRound;
-    // 拐角处理：设置两个连接点曲线
-    bLeftPath.lineJoinStyle = kCGLineJoinRound;
-                                
+    CGFloat lineWidth = 1.f;
     //静态水面高度
-    CGFloat staticHeight = bodyHeight * 0.3;
-    CGFloat staticWidth = bottomWidth * 1.23;
+    CGFloat staticHeight = bodyHeight * 0.5;
+    CGFloat staticWidth = bottomWidth * 1.27;
     
     //起始点
     CGFloat leftStartX = (loadWidth - staticWidth) * 0.5;
     CGFloat leftStartY = loadHeight - marginSpace - bottleWidth - staticHeight;
     CGPoint leftStartPoint = CGPointMake(leftStartX, leftStartY);
     
-    [bLeftPath moveToPoint:leftStartPoint];
-    
     //结束点
     CGFloat leftEndX = loadWidth * 0.5;
     CGFloat leftEndY = loadHeight - marginSpace - bottleWidth;
     CGPoint leftEndPoint = CGPointMake(leftEndX, leftEndY);
     
+    //中间补全
+    UIBezierPath *bMidPath = [UIBezierPath bezierPath];
+    bMidPath.lineWidth = 0.1;
+    // 终点处理：设置结束点曲线
+    bMidPath.lineCapStyle = kCGLineCapRound;
+    // 拐角处理：设置两个连接点曲线
+    bMidPath.lineJoinStyle = kCGLineJoinRound;
+    
+    CGPoint rightStartPoint = CGPointMake(loadWidth-leftStartX, leftStartY);
+    [bMidPath moveToPoint:leftStartPoint];
+    [bMidPath addLineToPoint:leftEndPoint];
+    [bMidPath addLineToPoint:rightStartPoint];
+    [bMidPath closePath];
+    
+    CAShapeLayer *bMidWaterLayer = [CAShapeLayer layer];
+    bMidWaterLayer.path = bMidPath.CGPath;
+    bMidWaterLayer.lineWidth = 0.1;
+    bMidWaterLayer.fillColor = WaterColor.CGColor;
+    bMidWaterLayer.strokeColor = [UIColor clearColor].CGColor;
+    [self.loadingView.layer addSublayer:bMidWaterLayer];
+    
     //左侧弧线
+    UIBezierPath *bLeftPath = [UIBezierPath bezierPath];
     //控制点
-    CGFloat controlX = (loadWidth - bottomWidth) * 0.5 + bottleWidth;
-    CGFloat controlY = loadHeight - marginSpace;
+    CGFloat controlX = (loadWidth - bottomWidth) * 0.5 - bottleWidth*2.1;
+    CGFloat controlY = loadHeight - marginSpace - bodyHeight*0.2;
     CGPoint control1Point = CGPointMake(controlX, controlY);
     
-    CGFloat controlX1 = controlX;
-    CGFloat controlY1 = controlY - bottleWidth;
+    CGFloat controlX1 = (loadWidth - bottomWidth) * 0.5;
+    CGFloat controlY1 = loadHeight - marginSpace;
     CGPoint control2Point = CGPointMake(controlX1, controlY1);
+    [bLeftPath moveToPoint:leftStartPoint];
     [bLeftPath addCurveToPoint:leftEndPoint
                  controlPoint1:control1Point
                  controlPoint2:control2Point];
@@ -326,9 +344,9 @@ static CGFloat loadHeight = 220.f;
     //左侧
     CAShapeLayer *bLeftWaterLayer = [CAShapeLayer layer];
     bLeftWaterLayer.path = bLeftPath.CGPath;
-    bLeftWaterLayer.lineWidth = bottleWidth;
-    bLeftWaterLayer.fillColor = [UIColor clearColor].CGColor;
-    bLeftWaterLayer.strokeColor = [UIColor whiteColor].CGColor;
+    bLeftWaterLayer.lineWidth = lineWidth;
+    bLeftWaterLayer.fillColor = WaterColor.CGColor;
+    bLeftWaterLayer.strokeColor = SpaceColor.CGColor;
     [self.loadingView.layer addSublayer:bLeftWaterLayer];
     
     //右侧
@@ -337,10 +355,12 @@ static CGFloat loadHeight = 220.f;
     CAShapeLayer *bRightLayer = [CAShapeLayer layer];
     bRightLayer.path = bLeftWaterLayer.path;
     bRightLayer.affineTransform = trans;
-    bRightLayer.lineWidth = bottleWidth;
-    bRightLayer.fillColor = [UIColor clearColor].CGColor;
-    bRightLayer.strokeColor = [UIColor whiteColor].CGColor;
+    bRightLayer.lineWidth = lineWidth;
+    bRightLayer.fillColor = WaterColor.CGColor;
+    bRightLayer.strokeColor = SpaceColor.CGColor;
     [self.loadingView.layer addSublayer:bRightLayer];
+    
+    
 }
 
 /**
