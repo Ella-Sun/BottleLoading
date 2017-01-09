@@ -8,6 +8,6 @@
 ![实例](https://github.com/Sun-Hong/BottleLoading/blob/master/BezierPathTry/VaseLoading/bottleLoading.gif)<br><br>
 步骤：
 ---
-[x]实现最外侧的花瓶形态
-[ ]实现水波纹晃动的效果
-[ ]实现单个水滴从水面升起、掉落的效果 
+1. 实现最外侧的花瓶形态 [x]
+2. 实现水波纹晃动的效果 [ ]
+3. 实现单个水滴从水面升起、掉落的效果  [ ]
