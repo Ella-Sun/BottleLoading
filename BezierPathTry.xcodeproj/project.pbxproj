@@ -17,6 +17,7 @@
 		4476B3C31E1E3B780073166A /* BezierPathTryUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4476B3C21E1E3B780073166A /* BezierPathTryUITests.m */; };
 		4476B3D61E1E3BEF0073166A /* BottleLoading.m in Sources */ = {isa = PBXBuildFile; fileRef = 4476B3D51E1E3BEF0073166A /* BottleLoading.m */; };
 		4476B3D81E1E3CD20073166A /* bottleLoading.gif in Resources */ = {isa = PBXBuildFile; fileRef = 4476B3D71E1E3CD20073166A /* bottleLoading.gif */; };
+		44A6FE4F1E2390CF00134813 /* WaterDropView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44A6FE4E1E2390CF00134813 /* WaterDropView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +57,8 @@
 		4476B3D41E1E3BEF0073166A /* BottleLoading.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BottleLoading.h; sourceTree = "<group>"; };
 		4476B3D51E1E3BEF0073166A /* BottleLoading.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BottleLoading.m; sourceTree = "<group>"; };
 		4476B3D71E1E3CD20073166A /* bottleLoading.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = bottleLoading.gif; sourceTree = "<group>"; };
+		44A6FE4D1E2390CF00134813 /* WaterDropView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WaterDropView.h; sourceTree = "<group>"; };
+		44A6FE4E1E2390CF00134813 /* WaterDropView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WaterDropView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -152,6 +155,8 @@
 				4476B3D71E1E3CD20073166A /* bottleLoading.gif */,
 				4476B3D41E1E3BEF0073166A /* BottleLoading.h */,
 				4476B3D51E1E3BEF0073166A /* BottleLoading.m */,
+				44A6FE4D1E2390CF00134813 /* WaterDropView.h */,
+				44A6FE4E1E2390CF00134813 /* WaterDropView.m */,
 			);
 			name = "BottleLoading(花瓶加载动画)";
 			path = VaseLoading;
@@ -297,6 +302,7 @@
 				4476B3A51E1E3B780073166A /* ViewController.m in Sources */,
 				4476B3D61E1E3BEF0073166A /* BottleLoading.m in Sources */,
 				4476B3A21E1E3B780073166A /* AppDelegate.m in Sources */,
+				44A6FE4F1E2390CF00134813 /* WaterDropView.m in Sources */,
 				4476B39F1E1E3B780073166A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -533,6 +539,7 @@
 				4476B3C91E1E3B780073166A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4476B3CA1E1E3B780073166A /* Build configuration list for PBXNativeTarget "BezierPathTryTests" */ = {
 			isa = XCConfigurationList;
@@ -541,6 +548,7 @@
 				4476B3CC1E1E3B780073166A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4476B3CD1E1E3B780073166A /* Build configuration list for PBXNativeTarget "BezierPathTryUITests" */ = {
 			isa = XCConfigurationList;
@@ -549,6 +557,7 @@
 				4476B3CF1E1E3B780073166A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
